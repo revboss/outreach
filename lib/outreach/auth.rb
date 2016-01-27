@@ -6,12 +6,14 @@ module Outreach
 
     base_uri 'https://api.outreach.io'
 
+    attr_accessor :access_token, :refresh_token, :expires
+
     def initialize(access_token, refresh_token=nil, expires=nil)
       @access_token = access_token
       @refresh_token = refresh_token
       @expires = expires
 
-      self.headers "Authorization" => "Bearer #{@access_token}"
+      @headers = { "Authorization" => "Bearer #{@access_token}" }
     end
 
     def self.authorize_url(*permissions)
@@ -40,7 +42,7 @@ module Outreach
         refresh_token: @refresh_token
       }
 
-      response = self.post('/oauth/token', options, headers: {})
+      response = self.post('/oauth/token', options)
 
       if response.code != 200
         raise "Unexpected response for Outreach token refresh (#{response.code}): #{response.message} "
@@ -51,24 +53,25 @@ module Outreach
       @expires = response.parsed_response['expires']
     end
 
-    def authorize(auth_code)
+    def self.authorize(auth_code)
       options = {
         client_id: Outreach.configuration.client_id,
         client_secret: Outreach.configuration.client_secret,
         redirect_uri: Outreach.configuration.redirect_uri,
         grant_type: 'authorization_code',
-        refresh_token: auth_token
+        code: auth_code
       }
 
-      self.post('/oauth/token', options, headers: {})
+      self.post('/oauth/token', options)
 
       if response.code != 200
         raise "Unexpected response for Outreach authorization (#{response.code}): #{response.message} "
       end
 
-      @access_token = response.parsed_response['access_token']
-      @refresh_token = response.parsed_response['refresh_token']
-      @expires = response.parsed_response['expires']
+      access_token = response.parsed_response['access_token']
+      refresh_token = response.parsed_response['refresh_token']
+      expires = response.parsed_response['expires']
+      self.class.new access_token, refresh_token, expires
     end
   end
 end

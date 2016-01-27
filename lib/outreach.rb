@@ -1,6 +1,8 @@
 require "outreach/version"
 require "outreach/configuration"
 require "outreach/auth"
+require "outreach/prospect"
+require "outreach/sequence"
 
 module Outreach
   # Permission constants
