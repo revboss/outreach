@@ -50,7 +50,7 @@ module Outreach
 
       @access_token = response.parsed_response['access_token']
       @refresh_token = response.parsed_response['refresh_token']
-      @expires = response.parsed_response['expires']
+      @expires = Time.at(response.parsed_response['created_at'] + response.parsed_response['expires_in'])
     end
 
     def self.authorize(auth_code)
@@ -68,10 +68,9 @@ module Outreach
         raise "Unexpected response for Outreach authorization (#{response.code}): #{response.message}"
       end
 
-      byebug
       access_token = response.parsed_response['access_token']
       refresh_token = response.parsed_response['refresh_token']
-      expires = response.parsed_response['expires']
+      expires = Time.at(response.parsed_response['created_at'] + response.parsed_response['expires_in'])
       self.new access_token, refresh_token, expires
     end
   end
