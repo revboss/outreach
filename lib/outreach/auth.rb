@@ -62,7 +62,7 @@ module Outreach
         code: auth_code
       }
 
-      self.post('/oauth/token', options)
+      response = self.post('/oauth/token', options)
 
       if response.code != 200
         raise "Unexpected response for Outreach authorization (#{response.code}): #{response.message} "
