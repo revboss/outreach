@@ -42,7 +42,7 @@ module Outreach
         refresh_token: @refresh_token
       }
 
-      response = self.post('/oauth/token', query: query)
+      response = self.class.post('/oauth/token', query: query)
 
       if response.code != 200
         raise "Unexpected response for Outreach token refresh (#{response.code}): #{response.message} "

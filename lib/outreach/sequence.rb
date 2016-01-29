@@ -1,7 +1,5 @@
 module Outreach
   class Sequence < Auth
-    include HTTParty
-    
     def query(page_number = 1, page_size = 50)
       query = {
         page: {
@@ -11,7 +9,7 @@ module Outreach
       }
 
       byebug
-      response = self.get('/1.0/sequences', query: query, headers: @headers)
+      response = self.class.get('/1.0/sequences', query: query, headers: @headers)
       if response.code != 200
         raise "Unexpected response for Outreach sequence list (#{response.code}): #{response.message} "
       end
@@ -29,7 +27,7 @@ module Outreach
         }
       }
 
-      response = self.patch("/1.0/sequences/#{sequence_id}", query: query, headers: @headers)
+      response = self.class.patch("/1.0/sequences/#{sequence_id}", query: query, headers: @headers)
       if response.code != 200
         raise "Unexpected response for Outreach add prospect to sequence (#{response.code}): #{response.message} "
       end
