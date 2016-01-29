@@ -8,13 +8,11 @@ module Outreach
         }
       }
 
-      byebug
       response = self.class.get('/1.0/sequences', query: query, headers: @headers)
       if response.code != 200
         raise "Unexpected response for Outreach sequence list (#{response.code}): #{response.message} "
       end
 
-      byebug
       response.parsed_response['data']
     end
 
