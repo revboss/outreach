@@ -1,14 +1,14 @@
 module Outreach
   class Sequence < Auth
     def query(page_number = 1, page_size = 50)
-      options = {
+      query = {
         page: {
           number: page_number,
           size: [page_size, 50].min
         }
       }
 
-      response = self.get('/1.0/sequences', options, headers: @headers)
+      response = self.get('/1.0/sequences', query: query, headers: @headers)
       if response.code != 200
         raise "Unexpected response for Outreach sequence list (#{response.code}): #{response.message} "
       end
@@ -17,7 +17,7 @@ module Outreach
     end
 
     def add_prospects(sequence_id, *prospect_ids)
-      options = {
+      query = {
         data: {
           relationships: {
             prospected: prospect_ids.map { |pid| { data: { id: pid } } }
@@ -25,7 +25,7 @@ module Outreach
         }
       }
 
-      response = self.patch("/1.0/sequences/#{sequence_id}", options, headers: @headers)
+      response = self.patch("/1.0/sequences/#{sequence_id}", query: query, headers: @headers)
       if response.code != 200
         raise "Unexpected response for Outreach add prospect to sequence (#{response.code}): #{response.message} "
       end

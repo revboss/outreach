@@ -34,7 +34,7 @@ module Outreach
     end
 
     def refresh
-      options = {
+      query = {
         client_id: Outreach.configuration.client_id,
         client_secret: Outreach.configuration.client_secret,
         redirect_uri: Outreach.configuration.redirect_uri,
@@ -42,7 +42,7 @@ module Outreach
         refresh_token: @refresh_token
       }
 
-      response = self.post('/oauth/token', options)
+      response = self.post('/oauth/token', query: query)
 
       if response.code != 200
         raise "Unexpected response for Outreach token refresh (#{response.code}): #{response.message} "
@@ -54,7 +54,7 @@ module Outreach
     end
 
     def self.authorize(auth_code)
-      options = {
+      query = {
         client_id: Outreach.configuration.client_id,
         client_secret: Outreach.configuration.client_secret,
         redirect_uri: Outreach.configuration.redirect_uri,
@@ -62,7 +62,7 @@ module Outreach
         code: auth_code
       }
 
-      response = self.post('/oauth/token', options)
+      response = self.post('/oauth/token', query: query)
 
       if response.code != 200
         raise "Unexpected response for Outreach authorization (#{response.code}): #{response.message} "
