@@ -68,6 +68,7 @@ module Outreach
         raise "Unexpected response for Outreach authorization (#{response.code}): #{response.message}"
       end
 
+      byebug
       access_token = response.parsed_response['access_token']
       refresh_token = response.parsed_response['refresh_token']
       expires = response.parsed_response['expires']
