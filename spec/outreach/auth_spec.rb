@@ -56,5 +56,40 @@ module Outreach
         expect(auth.instance_variable_get(:@headers)['Authorization']).to eq "Bearer ACCESS_TOKEN"
       end
     end
+
+    describe "authorize" do
+      describe "successful response" do
+        before do
+          resp = double("response")
+          allow(resp).to receive(:code).and_return(200)
+          allow(resp).to receive(:parsed_response).and_return( {
+            'access_token' => 'NEW_ACCESS_TOKEN',
+            'refresh_token' => 'NEW_REFRESH_TOKEN',
+            'expires' => Time.now + 3600
+          } )
+          expect(Outreach::Auth).to receive(:post).and_return(resp)
+        end
+
+        it "returns a Auth object" do
+          auth = Outreach::Auth.authorize('CODE')
+          expect(auth).to be_a_kind_of(Outreach::Auth)
+        end
+      end
+
+      describe "failure response" do
+        before do
+          resp = double("response")
+          allow(resp).to receive(:code).and_return(401)
+          allow(resp).to receive(:message).and_return("test error")
+          expect(Outreach::Auth).to receive(:post).and_return(resp)
+        end
+
+        it "raises an error" do
+          expect {
+            Outreach::Auth.authorize('CODE')
+          }.to raise_error "Unexpected response for Outreach authorization (401): test error"
+        end
+      end
+    end
   end
 end

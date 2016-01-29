@@ -65,13 +65,13 @@ module Outreach
       response = self.post('/oauth/token', query: query)
 
       if response.code != 200
-        raise "Unexpected response for Outreach authorization (#{response.code}): #{response.message} "
+        raise "Unexpected response for Outreach authorization (#{response.code}): #{response.message}"
       end
 
       access_token = response.parsed_response['access_token']
       refresh_token = response.parsed_response['refresh_token']
       expires = response.parsed_response['expires']
-      self.class.new access_token, refresh_token, expires
+      self.new access_token, refresh_token, expires
     end
   end
 end
