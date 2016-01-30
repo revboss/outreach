@@ -17,15 +17,15 @@ module Outreach
     end
 
     def add_prospects(sequence_id, *prospect_ids)
-      query = {
+      data = {
         data: {
           relationships: {
-            prospected: prospect_ids.map { |pid| { data: { id: pid } } }
+            prospects: prospect_ids.map { |pid| { data: { id: pid } } }
           }
         }
-      }
+      }.to_json
 
-      response = self.class.patch("/1.0/sequences/#{sequence_id}", query: query, headers: @headers)
+      response = self.class.patch("/1.0/sequences/#{sequence_id}", body: data, headers: @headers)
       if response.code != 200
         raise "Unexpected response for Outreach add prospect to sequence (#{response.code}): #{response.message} "
       end
