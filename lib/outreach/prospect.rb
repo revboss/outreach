@@ -8,7 +8,11 @@ module Outreach
 
       response = self.class.post('/1.0/prospects', options)
       if response.code != 200
-        raise "Unexpected response for Outreach prospect creation (#{response.code}): #{response.message} "
+        raise "Unexpected response for Outreach prospect creation (#{response.code}): #{response.message}"
+      end
+
+      if !response.parsed_response['errors'].nil? && !response.parsed_response['errors'].empty?
+        raise "Error in Outreach prospect create (#{response.parsed_response['errors'][0]['status']}): #{response.parsed_response['errors'][0]['detail']}"
       end
 
       response.parsed_response['data']['id']

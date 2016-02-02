@@ -65,7 +65,8 @@ module Outreach
           allow(resp).to receive(:parsed_response).and_return( {
             'access_token' => 'NEW_ACCESS_TOKEN',
             'refresh_token' => 'NEW_REFRESH_TOKEN',
-            'expires' => Time.now + 3600
+            'created_at' => Time.now,
+            'expires_in' => 7200
           } )
           expect(Outreach::Auth).to receive(:post).and_return(resp)
         end
